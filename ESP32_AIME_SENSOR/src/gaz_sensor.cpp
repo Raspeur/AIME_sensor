@@ -1,7 +1,7 @@
 #include "gaz_sensor.h"
 
 
-void GazSensor::setup() {
+GazSensor::GazSensor() {
     pinMode(pin_sensor, INPUT);
 }
 

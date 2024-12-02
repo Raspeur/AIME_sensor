@@ -1,13 +1,16 @@
 #include <Arduino.h>
 #include "gaz_sensor.h"
+#include "oled_screen.h"
 
 GazSensor gazSensor;
+OledScreen oledScreen;
+
 
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
-  gazSensor.setup();
   Serial.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);
+  oledScreen.DisplayText(oledScreen.oled, 0, 0, "Hello", 1);
 }
 
 // the loop function runs over and over again forever

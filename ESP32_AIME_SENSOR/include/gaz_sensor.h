@@ -8,7 +8,7 @@ class GazSensor {
 private:
     int pin_sensor = 36;
 public:
-    void setup();
+    GazSensor();
     float get_sensor_volt();
 
 private:
