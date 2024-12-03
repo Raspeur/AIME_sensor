@@ -10,11 +10,19 @@ private:
     int nombreDePixelsEnLargeur=128;         // Taille de l'écran OLED, en pixel, au niveau de sa largeur
     int nombreDePixelsEnHauteur=64;          // Taille de l'écran OLED, en pixel, au niveau de sa hauteur
     int brocheResetOLED=-1;          // Reset de l'OLED partagé avec l'Arduino (d'où la valeur à -1, et non un numéro de pin)
-    int adresseI2CecranOLED=0x3C;        // Adresse de "mon" écran OLED sur le bus i2c (généralement égal à 0x3C ou 0x3D)
 public:
+    int adresseI2CecranOLED=0x3C;        // Adresse de "mon" écran OLED sur le bus i2c (généralement égal à 0x3C ou 0x3D)
     Adafruit_SSD1306 oled;
     OledScreen();
-    void DisplayText(Adafruit_SSD1306 oled, int positionX, int positionY, const char* text, int textSize);
+    void initScreen();
+    template <typename TypeText>
+    void DisplayText(int positionX, int positionY, TypeText texte, int tailleTexte) {
+        oled.setTextSize(tailleTexte);
+        oled.setTextColor(SSD1306_WHITE);
+        oled.setCursor(positionX, positionY);
+        oled.print(texte);
+        oled.display();
+    }
 };
 
 #endif

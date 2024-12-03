@@ -6,7 +6,7 @@
 
 class GazSensor {
 private:
-    int pin_sensor = 36;
+    int pin_sensor = 13;
 public:
     GazSensor();
     float get_sensor_volt();
