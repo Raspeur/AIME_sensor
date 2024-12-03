@@ -8,7 +8,8 @@ const int txPin = 17;  // TX pin from Arduino (connect to RX of RN2483)
 // Create a SoftwareSerial object
 SoftwareSerial loraSerial(rxPin, txPin);
 
-// Function to send a command to RN2483 and print the response to Serial Monitor
+#define RESET_PIN 5  // Define the pin connected to the reset pin of the RN2483
+
 void loraSendCommand(String command) {
   while (loraSerial.available()) {
     loraSerial.read();
@@ -31,17 +32,34 @@ void loraSendCommand(String command) {
   // Print the response to the Serial Monitor
   Serial.println("Response: " + response);
 }
+
 void setup() {
   Serial.begin(9600);
   // Initialize software serial for RN2483 communication
   loraSerial.begin(57600);  // Default baud rate of the RN2483 is 57600
   Serial.println("LoRa RN2483 Communication Setup");
 
-  // Initialization commands to configure the RN2483
-  Serial.println("Sending: sys reset");
-  loraSendCommand("sys reset");
-  delay(100);
+  // Set the reset pin as output
+  pinMode(RESET_PIN, OUTPUT);
   
+  // Reset the RN2483 module
+  Serial.println("Resetting RN2483 module");
+  digitalWrite(RESET_PIN, LOW);  // Pull the reset pin low
+  delay(100);                    // Wait for 100ms
+  digitalWrite(RESET_PIN, HIGH); // Release the reset pin
+  delay(1000);                   // Wait for the module to reset
+  digitalWrite(RESET_PIN, LOW);  // Pull the reset pin low
+  delay(100);                    // Wait for 100ms
+  digitalWrite(RESET_PIN, HIGH); // Release the reset pin
+  delay(1000);                   // Wait for the module to reset
+  // Initialization commands to configure the RN2483
+  //Serial.println("Sending: sys reset");
+  //loraSendCommand("sys reset");
+  //delay(100);
+  Serial.println("Sending: sys get ver");
+  loraSendCommand("sys get ver");
+  delay(1000);
+
   Serial.println("Sending: radio set wdt 0");
   loraSendCommand("radio set wdt 0");
   delay(1000);
