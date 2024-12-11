@@ -1,113 +1,75 @@
 #include <Arduino.h>
 
-/*********
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/ttgo-lora32-sx1276-arduino-ide/
-*********/
-
 //Libraries for LoRa
-#include <SPI.h>
-#include <LoRa.h>
+//#include <SPI.h>
+//#include <LoRa.h>
 
 //Libraries for OLED Display
-#include <Wire.h>
-#include <Adafruit_GFX.h>
+//#include <Wire.h>
+//#include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-//define the pins used by the LoRa transceiver module
-#define SCK 5
-#define MISO 19
-#define MOSI 27
-#define SS 18
-#define RST 14
-#define DIO0 26
+#include "config.h"
 
-//866E6 for Europe (915E6 for North America or 433E6 for Asia)
-#define BAND 866E6
+void setup() {
+  Serial.begin(9600);
+  while(!Serial);
+  delay(5000);  // Give time to switch to the serial monitor
+  Serial.println(F("\nSetup ... "));
 
-//OLED pins
-#define OLED_SDA 4
-#define OLED_SCL 15 
-#define OLED_RST 16
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+  Serial.println(F("Initialise the radio"));
+  int16_t state;
+  int i = 0;
+  state = radio.begin();
+  debug(state != RADIOLIB_ERR_NONE, F("Initialise radio failed"), state, true);
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
-
-String LoRaData;
-
-void setup() { 
-  //initialize Serial Monitor
-  Serial.begin(115200);
   
-  //reset OLED display via software
-  pinMode(OLED_RST, OUTPUT);
-  digitalWrite(OLED_RST, LOW);
-  delay(20);
-  digitalWrite(OLED_RST, HIGH);
+  Serial.println(F("Initialise the radio2"));
+  // Setup the OTAA session information
+    state = node.beginOTAA(joinEUI, devEUI, 0, appKey);
+    debug(state != RADIOLIB_ERR_NONE, F("Initialise node failed"), state, true);
   
-  //initialize OLED
-  Wire.begin(OLED_SDA, OLED_SCL);
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) { // Address 0x3C for 128x32
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
-  }
-
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(1);
-  display.setCursor(0,0);
-  display.print("LORA RECEIVER ");
-  display.display();
-
-  Serial.println("LoRa Receiver Test");
   
-  //SPI LoRa pins
-  SPI.begin(SCK, MISO, MOSI, SS);
-  //setup LoRa transceiver module
-  LoRa.setPins(SS, RST, DIO0);
-
-  if (!LoRa.begin(BAND)) {
-    Serial.println("Starting LoRa failed!");
-    while (1);
-  }
-  Serial.println("LoRa Initializing OK!");
-  display.setCursor(0,10);
-  display.println("LoRa Initializing OK!");
-  display.display();  
+  do{
+    delay(5000);  // Wait for the serial monitor to open
+    Serial.println(F("Join ('login') the LoRaWAN Network"));
+    state = node.activateOTAA();
+    debug(state != RADIOLIB_LORAWAN_NEW_SESSION, F("Join failed"), state, false);
+  } while (state != RADIOLIB_ERR_NONE && i++ < 5);
+   
+  Serial.println(F("Ready!\n"));
 }
 
 void loop() {
+  Serial.println(F("Sending uplink"));
 
-  //try to parse packet
-  int packetSize = LoRa.parsePacket();
-  if (packetSize) {
-    //received a packet
-    Serial.print("Received packet ");
+  // This is the place to gather the sensor inputs
+  // Instead of reading any real sensor, we just generate some random numbers as example
+  uint8_t value1 = radio.random(100);
+  uint16_t value2 = radio.random(2000);
 
-    //read packet
-    while (LoRa.available()) {
-      LoRaData = LoRa.readString();
-      Serial.print(LoRaData);
-    }
+  // Build payload byte array
+  uint8_t uplinkPayload[3];
+  uplinkPayload[0] = value1;
+  uplinkPayload[1] = highByte(value2);   // See notes for high/lowByte functions
+  uplinkPayload[2] = lowByte(value2);
+  
+  // Perform an uplink
+  int16_t state = node.sendReceive(uplinkPayload, sizeof(uplinkPayload));    
+  debug(state < RADIOLIB_ERR_NONE, F("Error in sendReceive"), state, false);
 
-    //print RSSI of packet
-    int rssi = LoRa.packetRssi();
-    Serial.print(" with RSSI ");    
-    Serial.println(rssi);
-
-   // Dsiplay information
-   display.clearDisplay();
-   display.setCursor(0,0);
-   display.print("LORA RECEIVER");
-   display.setCursor(0,20);
-   display.print("Received packet:");
-   display.setCursor(0,30);
-   display.print(LoRaData);
-   display.setCursor(0,40);
-   display.print("RSSI:");
-   display.setCursor(30,40);
-   display.print(rssi);
-   display.display();   
+  // Check if a downlink was received 
+  // (state 0 = no downlink, state 1/2 = downlink in window Rx1/Rx2)
+  if(state > 0) {
+    Serial.println(F("Received a downlink"));
+  } else {
+    Serial.println(F("No downlink received"));
   }
+
+  Serial.print(F("Next uplink in "));
+  Serial.print(uplinkIntervalSeconds);
+  Serial.println(F(" seconds\n"));
+  
+  // Wait until next uplink - observing legal & TTN FUP constraints
+  delay(15000UL);  // delay needs milli-seconds
 }
