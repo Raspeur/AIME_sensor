@@ -1,36 +1,36 @@
 # 2024_2025_GAUCHE_JUMIN
-Ce projet fait partie de la formation de l'année 5ISS à l'INSA Toulouse. Nous avons développé un capteur de gaz à nanoparticules à l'AIME, le laboratoire de l'INSA Toulouse. Ensuite, nous avons conçu un PCB et développé un code sur ESP32 pour exploiter ce capteur et afficher ses données sur une interface web.
+This project is part of the 5ISS program at INSA Toulouse. We developed a nanoparticle-based gas sensor at AIME, the INSA Toulouse laboratory. Then, we designed a PCB and developed ESP32 code to exploit the sensor and display its data on a web interface.
 
-## SOMMAIRE 
+## CONTENTS
 1. [Introduction](#introduction)
-2. [LoRa et LoRaWAN](#lora)
+2. [LoRa and LoRaWAN](#lora)
 3. [The Things Network (TTN)](#the-things-network-ttn)
 4. [LTspice](#ltspice)
 5. [KiCad](#kicad)
 6. [Node-RED](#node-red)
 7. [AppInventor](#appinventor)
 8. [Datasheet](#datasheet)
-9. [Améliorations Possibles](#améliorations-possibles)
+9. [Possible Improvements](#possible-improvements)
 10. [Contacts](#contacts)
 
 ---
 
 ## Introduction
 
-Ce projet a permis de développer un système complet pour exploiter un capteur de gaz, comprenant :
-- La conception d'un **shield PCB** pour l'ESP32.
-- La connexion au réseau **LoRaWAN** à travers **The Things Network (TTN)**.
-- La visualisation des données via un tableau de bord interactif sur **Node-RED**.
+This project allowed us to develop a complete system for exploiting a gas sensor, including:
+- Designing a **shield PCB** for the ESP32.
+- Connecting to the **LoRaWAN** network via **The Things Network (TTN)**.
+- Visualizing data through an interactive dashboard on **Node-RED**.
 
-Le microcontrôleur principal utilisé est un **ESP32** avec un module **LoRa intégré**. Pour simuler le capteur de gaz développé à l'AIME, nous avons également utilisé un capteur industriel **Grove MQ-3B**.
+The main microcontroller used is an **ESP32** with an integrated **LoRa module**. To simulate the gas sensor developed at AIME, we also used an industrial **Grove MQ-3B sensor**.
 
-Le contenu de ce dépôt inclut :
-- [x] **Code source Arduino** pour collecter les données, les afficher localement, et les envoyer sur TTN.
-- [x] Les **fichiers KiCad** du shield PCB, avec le schéma et le modèle final monté.
-- [x] Le **flow Node-RED** et le tableau de bord web associé.
-- [x] La **datasheet** complète du capteur.
+This repository contains:
+- [x] **Arduino source code** to collect data, display it locally, and send it to TTN.
+- [x] The **KiCad files** for the shield PCB, including the schematic and the final assembled model.
+- [x] The **Node-RED flow** and its associated web dashboard.
+- [x] The complete **datasheet** of the sensor.
 
-Voici quelques images du produit final :
+Here are some images of the final product:
 <div align="center">
     <img src="images/card_view1.png" width="45%"> 
     <img src="images/card_view2.png" width="45%"> 
@@ -41,13 +41,13 @@ Voici quelques images du produit final :
 
 ## LoRa & LoRaWAN
 
-LoRa (Long Range) est une technologie de communication sans fil permettant la transmission de données sur de longues distances avec une faible consommation énergétique. 
+LoRa (Long Range) is a wireless communication technology designed to transmit data over long distances with low energy consumption.
 
-Dans ce projet, nous commencé par établir une communication en point à point entre 2 modules.
+In this project, we started by establishing point-to-point communication between two modules.
 
-Dans un deuxième temps, nous avons enregistrer le module sur le réseau LoRaWAN de l'INSA, afin de pouvoir envoyer les données de notre capteur de façon sécurisée, et de pouvoir les récupérer via Chirpstack.
+Later, we registered the module on INSA's LoRaWAN network to securely send our sensor data and retrieve it via ChirpStack.
 
-A cause d'un problème avec la gateway de l'INSA, nous avons décidé de déployer notre propre gateway LoRa sur le réseau LoRaWAN TTN (The Thing Network).
+Due to issues with INSA's gateway, we decided to deploy our own LoRa gateway on The Things Network (TTN).
 
 <div align="center">
     <img src="images/gateway_lora.png" width="50%">
@@ -57,43 +57,43 @@ A cause d'un problème avec la gateway de l'INSA, nous avons décidé de déploy
 
 ## The Things Network (TTN)
 
-TTN est une plateforme qui permet de connecter et de gérer des dispositifs LoRaWAN. Voici les étapes principales de l'intégration avec TTN :
-1. Enregistrement de notre capteur ESP32 sur TTN.
-2. Visualisation des trames envoyées par le capteur.
-3. Récupération des données sur **Node-RED** via le protocole MQTT.
+TTN is a platform that enables the connection and management of LoRaWAN devices. The main steps in integrating with TTN were:
+1. Registering our ESP32 sensor on TTN.
+2. Visualizing the frames sent by the sensor.
+3. Retrieving the data on **Node-RED** via the MQTT protocol.
 
 ---
 
 ## LTspice
 
-Nous avons utilisé **LTspice** pour simuler et dimensionner les composants de l'étage d'adaptation du signal du capteur. Cela garantit une acquisition de données fiable et précise avant leur traitement par le microcontrôleur.
+We used **LTspice** to simulate and size the components of the sensor's signal adaptation stage. This ensured reliable and accurate data acquisition before processing it with the microcontroller.
 
-Vous pouvez en apprendre plus en lisant le README dédié la partie simulation.
+You can learn more by reading the dedicated [README](hardware/ltspice_simulation/README.md) in the simulation section.
 
 ---
 
 ## KiCad
 
-Nous avons conçu le **shield PCB** de l'ESP32 sur **KiCad**, intégrant :
-- L'adaptation du signal pour le capteur de gaz.
-- Les connecteurs pour une intégration simplifiée.
+We designed the **shield PCB** for the ESP32 on **KiCad**, integrating:
+- Signal adaptation for the gas sensor.
+- Connectors for simplified integration.
 
-Voici une vue du shield monté :
+Here is a view of the assembled shield:
 
 <div align="center">
     <img src="hardware/pcb/esp32_aime_front_dimensions.png" width="45%"> 
     <img src="hardware/pcb/esp32_aime_back_dimensions.png" width="47.5%"> 
 </div>
 
-Vous pouvez aller lire le [README](hardware/pcb/README.md) dédié au routage pour plus de détails. 
+For more details, check the dedicated [README](hardware/pcb/README.md) on routing.
 
 ---
 
 ## Node-RED
 
-**Node-RED** est une plateforme de programmation par blocs utilisée pour créer des interfaces web. Nous avons développé un tableau de bord pour afficher les données du capteur en temps réel. 
+**Node-RED** is a block-based programming platform used to create web interfaces. We developed a dashboard to display real-time sensor data.
 
-Voici notre tableau de bord :
+Here is our dashboard:
 <div align="center">
     <img src="node-red/dashboard_nodered.png" width="40%">
 </div>
@@ -102,11 +102,13 @@ Voici notre tableau de bord :
 
 ## Datasheet
 
-La **datasheet** du capteur développé à l'AIME décrit ses caractéristiques techniques, le procédé de fabrication, et ses spécifications d'utilisation. Elle est disponible dans le répertoire `/datasheet`.
+The **datasheet** of the gas sensor developed at AIME details its technical characteristics, manufacturing process, and usage specifications. It is available in the [/datasheet](datasheet) directory.
 
---
+---
+
 ## AppInventor
-Avec **AppInventor**, nous avons conçu une application mobile capable de communiquer directement avec un récepteur Bluetooth et d'allumer une LED. Vous pouvez voir l'application et les fichiers sources dans le répertoir `/appinventor`.
+
+Using **AppInventor**, we designed a mobile application capable of directly communicating with a Bluetooth receiver to turn an LED on or off. You can view the application and its source files in the [/appinventor](appinventor) directory.
 
 <div align="center">
     <img src="appinventor/screenshot_app.jpg" width="40%">
@@ -114,18 +116,18 @@ Avec **AppInventor**, nous avons conçu une application mobile capable de commun
 
 ---
 
-## Améliorations Possibles
+## Possible Improvements
 
-1. Intégrer davantage de capteurs pour élargir les possibilités de mesure.
-2. Optimiser la gestion de l'alimentation du microcontrôleur pour une meilleure autonomie.
-3. Développer une application mobile pour contrôler et visualiser les données du capteur.
+1. Integrate more sensors to expand measurement capabilities.
+2. Optimize the power management of the microcontroller for better autonomy.
+3. Develop a mobile application to control and visualize the sensor's data.
 
 ---
 
 ## Contacts
 
-Pour toute question ou suggestion concernant ce projet, vous pouvez nous contacter :
+For any questions or suggestions regarding this project, feel free to contact us:
 
-- **Nom :** Clément Gauché & Noël Jumin
-- **Email :** clement.gauche@insa-toulouse.fr & noel.jumin@insa-toulouse.fr
-- **GitHub :** [@Raspeur](https://github.com/Raspeur/) & [@NoNo47400](https://github.com/NoNo47400/)
+- **Name:** Clément Gauché & Noël Jumin
+- **Email:** clement.gauche@insa-toulouse.fr & noel.jumin@insa-toulouse.fr
+- **GitHub:** [@Raspeur](https://github.com/Raspeur/) & [@NoNo47400](https://github.com/NoNo47400/)
