@@ -8,9 +8,10 @@ Ce projet fait partie de la formation de l'année 5ISS à l'INSA Toulouse. Nous 
 4. [LTspice](#ltspice)
 5. [KiCad](#kicad)
 6. [Node-RED](#node-red)
-7. [Datasheet](#datasheet)
-8. [Améliorations Possibles](#améliorations-possibles)
-9. [Contacts](#contacts)
+7. [AppInventor](#appinventor)
+8. [Datasheet](#datasheet)
+9. [Améliorations Possibles](#améliorations-possibles)
+10. [Contacts](#contacts)
 
 ---
 
@@ -83,7 +84,8 @@ Voici une vue du shield monté :
     <img src="hardware/pcb/esp32_aime_front_dimensions.png" width="45%"> 
     <img src="hardware/pcb/esp32_aime_back_dimensions.png" width="47.5%"> 
 </div>
-Vous pouvez aller lire le [README](hardware/pcb/README.md) dédié au routage pour plus de détails.
+
+Vous pouvez aller lire le [README](hardware/pcb/README.md) dédié au routage pour plus de détails. 
 
 ---
 
@@ -101,6 +103,14 @@ Voici notre tableau de bord :
 ## Datasheet
 
 La **datasheet** du capteur développé à l'AIME décrit ses caractéristiques techniques, le procédé de fabrication, et ses spécifications d'utilisation. Elle est disponible dans le répertoire `/datasheet`.
+
+--
+## AppInventor
+Avec **AppInventor**, nous avons conçu une application mobile capable de communiquer directement avec un récepteur Bluetooth et d'allumer une LED. Vous pouvez voir l'application et les fichiers sources dans le répertoir `/appinventor`.
+
+<div align="center">
+    <img src="appinventor/screenshot_app.jpg" width="40%">
+</div>
 
 ---
 
